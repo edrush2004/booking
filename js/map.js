@@ -1,3 +1,4 @@
+'use struct';
 
  var titleArray = [
    'Большая уютная квартира',
@@ -50,9 +51,15 @@ function getRandomChechinOut(){
   return CARD_CHECK_IN[getRandomInteger(CARD_CHECK_IN.length,0)];
 }
 
+function getRandomFeatures(){
+  return CARD_FEATURE.slice(getRandomInteger(CARD_FEATURE.length,0));
+}
 
+function getRandomPhotos(){
+  return CARD_PHOTOS.sort(function(){return 0.5 - Math.random()});
+}
 
-function generateData() {
+var generateData = function() {
   var data = [];
   
   for (var i=0; i<avatarsNum; i++){
@@ -62,7 +69,7 @@ function generateData() {
     };
   
   
-   data.push({
+  data.push({
     author: {
       avatar: 'img/avatars/user0' + (i + 1) + '.png'
     },
@@ -70,16 +77,59 @@ function generateData() {
       title: getRandomTitle(),
       address: location.x + ',' + location.y,
       price: getRandomInteger(MAX_PRICE,MIN_PRICE),
-      type: CARD_TYPE[Math.floor(Math.random() * CARD_TYPE.length)];
-      rooms: getRandomInteger(MAX_ROOM,MIX_ROOM);
-      guests: getRandomInteger(MAX_GUESTS, MIN_GUESTS);
+      type: CARD_TYPE[Math.floor(Math.random() * CARD_TYPE.length)],
+      rooms: getRandomInteger(MAX_ROOM,MIX_ROOM),
+      guests: getRandomInteger(MAX_GUESTS, MIN_GUESTS),
       checkin: getRandomChechinOut(),
       chechout: getRandomChechinOut(),
-      
+      features: getRandomFeatures(),
+      discription: '',
+      photos:  getRandomPhotos()
+    },
+    location: location
+    });
+  
+  }
+ 
+  return data;
+
+}
+
+var generatedObjects = generateData();
 
 
+function createPin(object) {
+
+  var map = document.querySelector('.map');
+ // map.classList.remove('map--faded');
+
+  var templatePin = document.querySelector('template').content.querySelector('.map__pin');
+
+  
+  var pinElement = templatePin.cloneNode(true);
+  
+  pinElement.style.left = object.location.x + 24 + 'px';
+  pinElement.style.top = object.location.y + 2 + 'px';
+  
+  var pinImage = pinElement.firstElementChild;
+  pinImage.src = object.author.avatar;
+  pinImage.alt = object.offer.title;
+  
+  return pinElement;
+}
+
+//Функция добавления пинов в разметку
+
+function createFragmentPins(array){
+ 
+  var fragmentPin = document.createDocumentFragment();
+
+  for (var i= 0; i <array.length; i++){
+    fragmentPin.appendChild(createPin(array[i]));
   }
 
-  )
-  
-}}
+  pins.appendChild(fragmentPin);
+}
+
+var pins = document.querySelector('.map__pins');
+createFragmentPins(generatedObjects);
