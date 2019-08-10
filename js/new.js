@@ -100,7 +100,7 @@ var generatedObjects = generateData();
 
 function createPin(object) {
 
-
+  
 
   var templatePin = document.querySelector('template').content.querySelector('.map__pin');
 
@@ -117,19 +117,6 @@ function createPin(object) {
   return pinElement;
 }
 
-//Функция добавления пинов в разметку
-
-function createFragmentPins(array){
- 
-  var fragmentPin = document.createDocumentFragment();
-
-  for (var i= 0; i <array.length; i++){
-    fragmentPin.appendChild(createPin(array[i]));
-  }
-
-  pins.appendChild(fragmentPin);
-}
-
 function getHouseType(type){
 
   switch (type){
@@ -143,15 +130,27 @@ function getHouseType(type){
       return 'Дом';
   }
 };
+//Функция добавления пинов в разметку
 
+function createFragmentPins(array){
+ 
+  var fragmentPin = document.createDocumentFragment();
 
+  for (var i= 0; i <array.length; i++){
+    fragmentPin.appendChild(createPin(array[i]));
+  }
+
+  pins.appendChild(fragmentPin);
+}
+
+//Функция добавление карточки
 function createCard(object){
 
   var cloneCard = templateCard.cloneNode(true);
 
   cloneCard.querySelector('.popup__avatar').src = object.author.avatar;
   cloneCard.querySelector('.popup__title').textContent = object.offer.title;
-  cloneCard.querySelector('.popup__text--address').textContent = object.offer.address;
+  cloneCard.querySelector('.popup__text--adress').textContent = object.offer.address;
   cloneCard.querySelector('.popup__text--price').textContent = object.offer.price + '?/ночь';
   // cloneCard.querySelector('.popup__type').textContent = getHouseType(object.offer.type);
   // cloneCard.querySelector('.popup__text--capacity').textContent = object.offer.rooms + ' комнаты для ' + object.offer.guests + ' гостей.';
@@ -179,8 +178,6 @@ function createFirstCard(object){
     map.insertBefore(object, mapFilters);
 
 }
-
-
 var map = document.querySelector('.map');
 map.classList.remove('map--faded');
 
@@ -188,6 +185,7 @@ var pins = document.querySelector('.map__pins');
 var mapFilters = document.querySelector('.map__filters-container');
 var templateCard = document.querySelector('template').content.querySelector('.map__card');
 
+// получение первого объекта из сгенерированного массива
 var card =  createCard(generatedObjects[0]);
 
 createFragmentPins(generatedObjects);
