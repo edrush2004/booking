@@ -25,6 +25,9 @@ var MIX_Y = 130;
 var MAX_Y = 630;
 var MIN_GUESTS =1;
 var MAX_GUESTS =3;
+var CARDS_PHOTO_WIDTH = 45;
+var CARDS_PHOTO_HEIGHT = 40;
+
 var CARD_FEATURE = [
   'wifi',
   'dishwasher',
@@ -152,25 +155,40 @@ function createCard(object){
   cloneCard.querySelector('.popup__avatar').src = object.author.avatar;
   cloneCard.querySelector('.popup__title').textContent = object.offer.title;
   cloneCard.querySelector('.popup__text--address').textContent = object.offer.address;
-  cloneCard.querySelector('.popup__text--price').textContent = object.offer.price + '?/ночь';
-  // cloneCard.querySelector('.popup__type').textContent = getHouseType(object.offer.type);
-  // cloneCard.querySelector('.popup__text--capacity').textContent = object.offer.rooms + ' комнаты для ' + object.offer.guests + ' гостей.';
-  // cloneCard.querySelector('.popup__text--time').textContent = 'Заезд после ' + object.offer.checkin + ', выезд до ' + object.offer.chechout;
+  cloneCard.querySelector('.popup__text--price').textContent = object.offer.price + 'Р/ночь';
+  cloneCard.querySelector('.popup__type').textContent = getHouseType(object.offer.type);
+  cloneCard.querySelector('.popup__text--capacity').textContent = object.offer.rooms + ' комнаты для ' + object.offer.guests + ' гостей.';
+  cloneCard.querySelector('.popup__text--time').textContent = 'Заезд после ' + object.offer.checkin + ', выезд до ' + object.offer.chechout;
 
-  // var popupFeatureList = cloneCard.querySelector('.popup__features');
-  // popupFeatureList.innerHTML = '';
+  var popupFeatureList = cloneCard.querySelector('.popup__features');
+  popupFeatureList.innerHTML = '';
 
-  // if (object.offer.features.length){
-  //   for (var i=0; i< object.offer.features.length; i++){
-  //     var newFeatureItem = document.createElement('li');
-  //     newFeatureItem.className = 'popup__feature popup__feature--' + object.offer.features;
-  //     popupFeatureList.appendChild(newFeatureItem);
-  //   }
-  // } else {
-  //   popupFeatureList.classList('hidden');
-  // } 
+  if (object.offer.features.length){
+    for (var i=0; i< object.offer.features.length; i++){
+      var newFeatureItem = document.createElement('li');
+      newFeatureItem.className = 'feature feature--' + object.offer.features[i];
+      popupFeatureList.appendChild(newFeatureItem);
+    }
+  } else {
+    popupFeatureList.classList('hidden');
+  } 
 
 
+  var popopFoto = cloneCard.querySelector('.popup__pictures');
+  popopFoto.innerHTML = '';
+  for (var j=0; j<object.offer.photos.length; j++){
+    var cardFoto = document.createElement('img');
+    cardFoto.classList.add('popop__photo');
+    cardFoto.src = object.offer.photos[j];
+    cardFoto.alt = 'Фотография жилья';
+    cardFoto.width = CARDS_PHOTO_WIDTH;
+    cardFoto.height = CARDS_PHOTO_HEIGHT;
+    
+    popopFoto.appendChild(cardFoto);  
+
+  }
+
+  cloneCard.querySelector('img').src = object.author.avatar;
   return cloneCard;
 }
 
