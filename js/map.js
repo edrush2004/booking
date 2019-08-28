@@ -101,7 +101,7 @@ var generateData = function() {
 var generatedObjects = generateData();
 
 
-function createPin(object) {
+function createPin(object, id) {
 
 
 
@@ -112,7 +112,7 @@ function createPin(object) {
   
   pinElement.style.left = object.location.x + 24 + 'px';
   pinElement.style.top = object.location.y + 2 + 'px';
-  
+  pinElement.dataset.index = id;
   var pinImage = pinElement.firstElementChild;
   pinImage.src = object.author.avatar;
   pinImage.alt = object.offer.title;
@@ -122,12 +122,26 @@ function createPin(object) {
 
 //Функция добавления пинов в разметку
 
+var onPinClick = function(evt){
+  var PinClick = evt.target;
+  while (PinClick !== map){
+    if (PinClick.className === 'map__pin'){
+      var idCard = PinClick.dataset.index;
+      createFirstCard(createCard(generatedObjects[idCard]));
+      return;
+    }
+    PinClick = PinClick.parentNode;
+  }
+}
+
 function createFragmentPins(array){
  
   var fragmentPin = document.createDocumentFragment();
 
   for (var i= 0; i <array.length; i++){
-    fragmentPin.appendChild(createPin(array[i]));
+    var newPin = createPin(array[i], i);
+    newPin.addEventListener('click', onPinClick);
+    fragmentPin.appendChild(newPin);
   }
 
   pins.appendChild(fragmentPin);
@@ -200,7 +214,7 @@ function createFirstCard(object){
 
 
 var map = document.querySelector('.map');
-map.classList.remove('map--faded');
+
 
 var pins = document.querySelector('.map__pins');
 var mapFilters = document.querySelector('.map__filters-container');
@@ -208,5 +222,52 @@ var templateCard = document.querySelector('template').content.querySelector('.ma
 
 var card =  createCard(generatedObjects[0]);
 
-createFragmentPins(generatedObjects);
-createFirstCard(card);
+//createFragmentPins(generatedObjects);
+//createFirstCard(card);
+
+var mapPinMain = document.querySelector('.map__pin--main');
+var fieldsetAll = document.querySelectorAll('fieldset');
+var noticeForm = document.querySelector('.notice__form');
+var addressForm = document.querySelector('#address');
+addressForm.readOnly = true;
+
+var coords = getCoordinates();
+
+
+function getAddressFormCord (object){
+  addressForm.value = (object.x + ',' + object.y);
+}
+
+function getCoordinates (){
+  var coordinates = {
+    x: mapPinMain.offsetLeft + Math.round(mapPinMain.offsetWidth / 2),
+    y: mapPinMain.offsetTop + Math.round(mapPinMain.offsetHeight / 2)
+  };
+  
+  return coordinates;
+
+}
+
+
+var fadeOn = function(){
+  for (var i = 0; i < fieldsetAll.length; i++){
+    fieldsetAll[i].disabled = true;   
+  }
+}
+
+var fadeOff = function(){
+  map.classList.remove('map--faded');
+  noticeForm.classList.remove('notice__form--disabled');
+  for (var i = 0; i < fieldsetAll.length; i++){
+    fieldsetAll[i].disabled = false;
+  }
+  createFragmentPins(generatedObjects);
+  getAddressFormCord(coords);
+
+
+  
+}
+
+fadeOn();
+
+mapPinMain.addEventListener('mouseup', fadeOff);
